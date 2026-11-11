@@ -15,6 +15,11 @@ public static class CommonRules
         RegexOptions.Compiled | RegexOptions.CultureInvariant,
         TimeSpan.FromMilliseconds(200));
 
+    private static readonly Regex BienSoPattern = new(
+        @"^[A-Za-z0-9\.\-\s]{4,15}$",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant,
+        TimeSpan.FromMilliseconds(200));
+
     public static string RequireText(string? value, string fieldName, int maxLength, int minLength = 1)
     {
         var text = (value ?? string.Empty).Trim();
@@ -46,6 +51,18 @@ public static class CommonRules
             throw new BusinessException($"{fieldName} phải gồm 10–11 chữ số và bắt đầu bằng 0.");
 
         return phone;
+    }
+
+    public static string RequireBienSoXe(string? value)
+    {
+        var bienSo = RequireText(value, "Biển số xe", 15, 4).ToUpperInvariant();
+        if (!BienSoPattern.IsMatch(bienSo))
+            throw new BusinessException("Biển số xe không được chứa ký tự đặc biệt.");
+
+        if (!bienSo.Any(char.IsAsciiDigit) || !bienSo.Any(char.IsAsciiLetter))
+            throw new BusinessException("Biển số xe phải bao gồm cả ký hiệu địa phương và sê-ri chữ cái.");
+
+        return bienSo;
     }
 
     public static string RequireCccd(string? value)

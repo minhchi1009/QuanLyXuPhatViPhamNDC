@@ -15,7 +15,7 @@ public static class ViPhamValidator
 
         viPham.ThoiGianViPham = CommonRules.RequireNotFuture(viPham.ThoiGianViPham, "Thời gian vi phạm");
         viPham.DiaDiem = CommonRules.RequireText(viPham.DiaDiem, "Địa điểm vi phạm", 255, 3);
-        viPham.BienSoXe = CommonRules.RequireText(viPham.BienSoXe, "Biển số xe", 15, 4).ToUpperInvariant();
+        viPham.BienSoXe = CommonRules.RequireBienSoXe(viPham.BienSoXe);
         viPham.MoTaPhuongTien = CommonRules.OptionalText(viPham.MoTaPhuongTien, "Mô tả phương tiện", 255);
 
         if (double.IsNaN(viPham.NongDoCon) || double.IsInfinity(viPham.NongDoCon) || viPham.NongDoCon < 0)

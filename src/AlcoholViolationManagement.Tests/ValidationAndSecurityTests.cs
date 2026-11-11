@@ -92,6 +92,28 @@ public class ValidationAndSecurityTests
         Assert.Equal("59A-123.45", viPham.BienSoXe);
     }
 
+    [Theory]
+    [InlineData("59A-123@45")]
+    [InlineData("59A-123#45")]
+    [InlineData("59A$12345")]
+    [InlineData("59A*12345")]
+    [InlineData("1234567")]
+    [InlineData("ABCDEFG")]
+    public void ViPhamValidator_InvalidLicensePlate_ShouldThrow(string plate)
+    {
+        var viPham = new ViPham
+        {
+            MaNguoiViPham = "NVP0000001",
+            MaLoaiPhuongTien = "LPT0000001",
+            ThoiGianViPham = DateTime.Now.AddHours(-1),
+            DiaDiem = "123 Điện Biên Phủ, Bình Thạnh",
+            BienSoXe = plate,
+            NongDoCon = 0.35
+        };
+
+        Assert.Throws<BusinessException>(() => ViPhamValidator.Validate(viPham));
+    }
+
     [Fact]
     public void QuyetDinhValidator_NgayRaTruocNgayViPham_ShouldThrow()
     {
