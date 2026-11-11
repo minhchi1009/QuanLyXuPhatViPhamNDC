@@ -8,6 +8,8 @@ lập trong tầng giao diện.
 > Tài liệu liên quan:
 > - [DatabaseGuide.md](DatabaseGuide.md) — thiết kế CSDL, kịch bản cài đặt, sao lưu và kiểm tra.
 > - [Skeleton.md](Skeleton.md) — kiến trúc, luồng xử lý và hướng dẫn mở rộng.
+> - [DefenseQnA.md](DefenseQnA.md) — cẩm nang bảo vệ đồ án & bộ câu hỏi phản biện môn PTTKYC.
+> - Kho mã nguồn: [https://github.com/minhchi1009/QuanLyXuPhatViPhamNDC](https://github.com/minhchi1009/QuanLyXuPhatViPhamNDC)
 
 ---
 
@@ -235,11 +237,20 @@ Tệp `src/AlcoholViolationManagement.WinForms/appsettings.json`:
 - Thông tin tổ chức (`ToChuc`) đang là mẫu, thay bằng thông tin thực khi có quyết định
   thống nhất đơn vị khảo sát.
 
-### 7.4 Build và chạy
+### 7.4 Build, Test và Chạy ứng dụng
 
 ```bat
+# 1. Build toàn bộ solution (0 error, 0 warning)
 dotnet build AlcoholViolationManagement.slnx
+
+# 2. Chạy toàn bộ kiểm thử tự động (xUnit)
+dotnet test AlcoholViolationManagement.slnx
+
+# 3. Chạy ứng dụng quản lý nghiệp vụ chính
 dotnet run --project src\AlcoholViolationManagement.WinForms
+
+# 4. Chạy cổng tra cứu vi phạm dành cho người dân
+dotnet run --project src\AlcoholViolationManagement.PublicLookup
 ```
 
 Hoặc mở solution/project trong Visual Studio, chọn cấu hình `Debug`, chạy
@@ -346,6 +357,8 @@ Dữ liệu mẫu hiện có: 30 người vi phạm, 60 vụ việc, 48 quyết 
 
 ## 12. Tài liệu tham chiếu
 
+- **GitHub Repository:** [https://github.com/minhchi1009/QuanLyXuPhatViPhamNDC](https://github.com/minhchi1009/QuanLyXuPhatViPhamNDC)
 - Báo cáo phân tích và thiết kế: `D:\PTTKYC\BAITAPLON-PTTKYC2.pdf`.
-- [DatabaseGuide.md](DatabaseGuide.md)
-- [Skeleton.md](Skeleton.md)
+- [DatabaseGuide.md](DatabaseGuide.md) — Thiết kế cơ sở dữ liệu và kịch bản SQL.
+- [Skeleton.md](Skeleton.md) — Khung kiến trúc và mở rộng chức năng.
+- [DefenseQnA.md](DefenseQnA.md) — Bộ câu hỏi và trả lời phản biện bảo vệ đồ án.
