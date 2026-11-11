@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\AlcoholViolationManagement.BLL\AlcoholViolationManagement.BLL.csproj" />
+    <ProjectReference Include="..\AlcoholViolationManagement.Domain\AlcoholViolationManagement.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationDefaultFont>Segoe UI, 9.75pt</ApplicationDefaultFont>
+    <!-- WFO1000: các thuộc tính mở rộng của control tự vẽ được gán trực tiếp trong file Designer. -->
+    <NoWarn>$(NoWarn);WFO1000;CS8669</NoWarn>
+  </PropertyGroup>
+
+</Project>

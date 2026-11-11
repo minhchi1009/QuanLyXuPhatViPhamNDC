@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AlcoholViolationManagement.BLL/AlcoholViolationManagement.BLL.csproj" />
+    <Project Path="src/AlcoholViolationManagement.DAL/AlcoholViolationManagement.DAL.csproj" />
+    <Project Path="src/AlcoholViolationManagement.Domain/AlcoholViolationManagement.Domain.csproj" />
+    <Project Path="src/AlcoholViolationManagement.PublicLookup/AlcoholViolationManagement.PublicLookup.csproj" />
+    <Project Path="src/AlcoholViolationManagement.WinForms/AlcoholViolationManagement.WinForms.csproj" />
+  </Folder>
+</Solution>
