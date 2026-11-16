@@ -27,7 +27,7 @@ public partial class MainForm : Form
             [VaiTroId.QuanTriHeThong, VaiTroId.LanhDao, VaiTroId.CanBoTaiChinh]),
         new("officers", "Cán bộ", "Danh sách cán bộ và vai trò nghiệp vụ", "\uE716", "Quản trị", [VaiTroId.QuanTriHeThong]),
         new("accounts", "Tài khoản", "Cấp tài khoản và kiểm soát truy cập", "\uE77B", "Quản trị", [VaiTroId.QuanTriHeThong]),
-        new("catalogs", "Danh mục", "Danh mục dùng chung của hệ thống", "\uE713", "Quản trị", [VaiTroId.QuanTriHeThong])
+        new("catalogs", "Danh mục", "Danh mục dùng chung của hệ thống", "\uE713", "Quản trị", [VaiTroId.QuanTriHeThong, VaiTroId.LanhDao])
     ];
 
     private readonly Dictionary<string, NavButton> _navButtons = new();

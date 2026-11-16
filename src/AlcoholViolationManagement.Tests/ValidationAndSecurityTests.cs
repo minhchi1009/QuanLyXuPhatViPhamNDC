@@ -144,5 +144,28 @@ public class ValidationAndSecurityTests
         Assert.True(Permissions.CanManageThanhToan(admin));
         Assert.True(Permissions.CanViewReports(admin));
         Assert.True(Permissions.CanAdminister(admin));
+        Assert.True(Permissions.CanEditCatalog(admin));
+    }
+
+    [Fact]
+    public void Permissions_LanhDao_ShouldHaveCatalogPermissions()
+    {
+        var lanhdao = new CurrentUser
+        {
+            MaCanBo = "CB00000004",
+            HoTen = "Lãnh đạo đơn vị",
+            CapBac = "Trung tá",
+            DonViCongTac = "CSGT",
+            MaTaiKhoan = "TK00000004",
+            TenDangNhap = "lanhdao",
+            VaiTroId = VaiTroId.LanhDao
+        };
+
+        Assert.True(Permissions.CanEditCatalog(lanhdao));
+        Assert.True(Permissions.CanManageQuyetDinh(lanhdao));
+        Assert.True(Permissions.CanViewReports(lanhdao));
+        Assert.True(Permissions.CanViewThanhToan(lanhdao));
+        Assert.False(Permissions.CanAdminister(lanhdao)); // Không được quản lý cán bộ/tài khoản
+        Assert.False(Permissions.CanManageThanhToan(lanhdao)); // Không được trực tiếp thu tiền
     }
 }

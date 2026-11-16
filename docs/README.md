@@ -71,7 +71,7 @@ Các gói được khai báo trong:
 
 ### 5.4 Quản lý danh mục
 - Loại phương tiện; mức nồng độ cồn (ngưỡng trên, mô tả); loại vi phạm và mức phạt.
-- Chỉ quản trị viên được thêm/sửa danh mục.
+- Quản trị viên và Lãnh đạo đơn vị được quyền xem, thêm và cập nhật danh mục khi có quy định/Nghị định mới.
 - Ràng buộc mỗi cặp (loại phương tiện, mức nồng độ) có đúng một loại vi phạm.
 
 ### 5.5 Lập và quản lý quyết định xử phạt
@@ -117,7 +117,8 @@ Các gói được khai báo trong:
 | Ghi nhận thanh toán | ✓ | – | – | ✓ |
 | Tra cứu | ✓ | ✓ | ✓ | ✓ |
 | Báo cáo thống kê | ✓ | – | ✓ | ✓ |
-| Quản lý cán bộ, tài khoản, danh mục | ✓ | – | – | – |
+| Quản lý cán bộ, tài khoản | ✓ | – | – | – |
+| Quản lý danh mục (mức phạt, phương tiện, ngưỡng cồn) | ✓ | – | ✓ | – |
 
 Quyền được kiểm tra ở **hai lớp**:
 - Giao diện: ẩn nút/màn hình không phù hợp (`AppSession`, `MainForm`).

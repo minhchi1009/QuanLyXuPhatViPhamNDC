@@ -107,3 +107,4 @@
 > 1. Luôn tự tin nhấn mạnh vào tính **phòng thủ đa tầng** (Giao diện $\rightarrow$ Nghiệp vụ $\rightarrow$ CSDL).
 > 2. Nhấn mạnh việc **không dùng số liệu mẫu hiển thị giả lập trên UI**: Mọi số liệu báo cáo, biểu đồ, danh sách đều đọc trực tiếp từ SQL Server.
 > 3. Trả lời ngắn gọn, đúng trọng tâm câu hỏi của thầy cô, sau đó chủ động liên hệ tới đoạn mã nguồn hoặc Stored Procedure cụ thể trong đồ án để chứng minh.
+

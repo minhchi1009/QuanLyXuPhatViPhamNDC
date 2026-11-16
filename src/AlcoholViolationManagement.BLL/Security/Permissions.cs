@@ -29,7 +29,8 @@ public static class Permissions
     public static bool CanAdminister(CurrentUser user) =>
         user.IsInRole(VaiTroId.QuanTriHeThong);
 
-    public static bool CanEditCatalog(CurrentUser user) => CanAdminister(user);
+    public static bool CanEditCatalog(CurrentUser user) =>
+        user.IsInRole(VaiTroId.QuanTriHeThong, VaiTroId.LanhDao);
 
     public static void EnsureManageNguoiViPham(CurrentUser user)
     {
