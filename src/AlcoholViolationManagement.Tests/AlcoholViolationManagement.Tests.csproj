@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AlcoholViolationManagement.Domain\AlcoholViolationManagement.Domain.csproj" />
     <ProjectReference Include="..\AlcoholViolationManagement.BLL\AlcoholViolationManagement.BLL.csproj" />
+    <ProjectReference Include="..\AlcoholViolationManagement.DAL\AlcoholViolationManagement.DAL.csproj" />
   </ItemGroup>
 
   <ItemGroup>

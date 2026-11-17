@@ -101,6 +101,14 @@
     * Mã lỗi `-2` (Timeout): Dịch thành *"Máy chủ cơ sở dữ liệu phản hồi quá lâu. Vui lòng thử lại."*
   * Nhờ vậy, người dùng không bao giờ phải nhìn thấy các thông báo lỗi kỹ thuật tiếng Anh khó hiểu, đồng thời chi tiết lỗi gốc (Stack Trace) vẫn được ghi lại vào tệp nhật ký `%LOCALAPPDATA%\AlcoholViolationManagement\logs\` phục vụ bảo trì.
 
+### Câu 13: Nghiệp vụ tự động quét trạng thái 'Quá hạn' (TT03) được thiết kế ra sao? Tại sao không dùng DML Trigger trong SQL Server?
+* **Trả lời:**
+  * **Tại sao không dùng Trigger:** DML Trigger trong SQL Server là cơ chế kích hoạt theo sự kiện ghi dữ liệu (`AFTER INSERT, UPDATE, DELETE`). Bản chất của việc "quá hạn 10 ngày" là sự kiện phụ thuộc vào **thời gian trôi qua của đồng hồ hệ thống (Temporal Event)**, không phải sự kiện tương tác dữ liệu. Nếu không có ai tác động vào dòng dữ liệu đó, Trigger sẽ không bao giờ được kích hoạt.
+  * **Giải pháp chuẩn công nghiệp:**
+    1. Viết Stored Procedure `dbo.sp_QuetVaCapNhatQuaHan` với tham số `@SoNgayChoPhep` (mặc định 10 ngày) và tham số đầu ra `@SoLuongCapNhat`. Thủ tục này chạy trong một `TRANSACTION` có `TRY...CATCH` và mệnh đề `OUTPUT` để đồng bộ trạng thái `TT03` sang cả 2 bảng `QUYET_DINH_XU_PHAT` và `VI_PHAM`.
+    2. Trong môi trường thực tế, thủ tục này được cấu hình chạy định kỳ nửa đêm qua **SQL Server Agent Job** hoặc Cron task.
+    3. Trên ứng dụng WinForms, hệ thống tích hợp **quét tự động ngầm khi mở màn hình Quyết định** (`DecisionListForm.Shown`) và cung cấp **nút bấm "Quét quá hạn"** cho phép Cán bộ/Lãnh đạo chủ động quét và nhận phản hồi tức thời.
+
 ---
 
 > **LỜI KHUYÊN KHI TRẢ LỜI TRƯỚC HỘI ĐỒNG:**

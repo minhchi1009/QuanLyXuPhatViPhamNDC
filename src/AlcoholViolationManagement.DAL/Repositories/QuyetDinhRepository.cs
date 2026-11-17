@@ -138,4 +138,24 @@ public sealed class QuyetDinhRepository : IQuyetDinhRepository
             },
             System.Data.CommandType.StoredProcedure);
     }
+
+    public async Task<int> QuetVaCapNhatQuaHanAsync(int soNgayChoPhep = 10)
+    {
+        await using var connection = await _database.OpenAsync();
+        using var command = new SqlCommand("dbo.sp_QuetVaCapNhatQuaHan", connection)
+        {
+            CommandType = System.Data.CommandType.StoredProcedure
+        };
+
+        command.Parameters.AddValue("@SoNgayChoPhep", soNgayChoPhep);
+        var output = new SqlParameter("@SoLuongCapNhat", System.Data.SqlDbType.Int)
+        {
+            Direction = System.Data.ParameterDirection.Output
+        };
+        command.Parameters.Add(output);
+
+        await command.ExecuteNonQueryAsync();
+
+        return output.Value is null or DBNull ? 0 : Convert.ToInt32(output.Value);
+    }
 }

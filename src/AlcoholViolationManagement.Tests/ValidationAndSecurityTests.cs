@@ -168,4 +168,86 @@ public class ValidationAndSecurityTests
         Assert.False(Permissions.CanAdminister(lanhdao)); // Không được quản lý cán bộ/tài khoản
         Assert.False(Permissions.CanManageThanhToan(lanhdao)); // Không được trực tiếp thu tiền
     }
+
+    [Fact]
+    public async Task QuyetDinhService_QuetVaCapNhatQuaHan_Unauthenticated_ShouldThrow()
+    {
+        var userContext = new UserContext(); // Chưa đăng nhập
+        var fakeQuyetDinhRepo = new FakeQuyetDinhRepository();
+        var fakeTaiKhoanRepo = new FakeTaiKhoanRepository();
+        var service = new AlcoholViolationManagement.BLL.Services.QuyetDinhService(fakeQuyetDinhRepo, null!, userContext, fakeTaiKhoanRepo);
+
+        await Assert.ThrowsAsync<BusinessException>(() => service.QuetVaCapNhatQuaHanAsync());
+    }
+
+    [Fact]
+    public async Task QuyetDinhService_QuetVaCapNhatQuaHan_Authenticated_ShouldReturnCount()
+    {
+        var userContext = new UserContext();
+        userContext.Set(new CurrentUser
+        {
+            MaCanBo = "CB00000002",
+            HoTen = "Nguyễn Văn A",
+            CapBac = "Đại úy",
+            DonViCongTac = "Đội CSGT",
+            MaTaiKhoan = "TK00000002",
+            TenDangNhap = "csgt01",
+            VaiTroId = VaiTroId.CanBoCsgt
+        });
+
+        var fakeQuyetDinhRepo = new FakeQuyetDinhRepository { ScannedCountResult = 5 };
+        var fakeTaiKhoanRepo = new FakeTaiKhoanRepository { IsActive = true };
+        var service = new AlcoholViolationManagement.BLL.Services.QuyetDinhService(fakeQuyetDinhRepo, null!, userContext, fakeTaiKhoanRepo);
+
+        var result = await service.QuetVaCapNhatQuaHanAsync(10);
+
+        Assert.Equal(5, result);
+        Assert.Equal(10, fakeQuyetDinhRepo.LastSoNgayChoPhep);
+    }
+
+    [Theory]
+    [InlineData(10, 11, true)]  // 11 ngày sau quyết định -> quá hạn 10 ngày
+    [InlineData(10, 10, false)] // Đúng 10 ngày -> chưa quá hạn
+    [InlineData(10, 5, false)]  // 5 ngày -> chưa quá hạn
+    public void OverdueLogic_CheckThreshold_ShouldBehaveCorrectly(int soNgayChoPhep, int daysElapsed, bool isOverdue)
+    {
+        var decisionDate = new DateTime(2026, 1, 1);
+        var currentDate = decisionDate.AddDays(daysElapsed);
+        var calculatedOverdue = (currentDate.Date - decisionDate.Date).TotalDays > soNgayChoPhep;
+
+        Assert.Equal(isOverdue, calculatedOverdue);
+    }
+}
+
+class FakeQuyetDinhRepository : AlcoholViolationManagement.DAL.Interfaces.IQuyetDinhRepository
+{
+    public int ScannedCountResult { get; set; }
+    public int LastSoNgayChoPhep { get; set; }
+
+    public Task<int> QuetVaCapNhatQuaHanAsync(int soNgayChoPhep = 10)
+    {
+        LastSoNgayChoPhep = soNgayChoPhep;
+        return Task.FromResult(ScannedCountResult);
+    }
+
+    public Task<PagedResult<QuyetDinhListItem>> SearchAsync(string? keyword, string? maTrangThai, DateTime? tuNgay, DateTime? denNgay, int page, int pageSize) => throw new NotImplementedException();
+    public Task<QuyetDinhListItem?> GetByIdAsync(string maQuyetDinh) => throw new NotImplementedException();
+    public Task<string?> GetMaQuyetDinhByVuViecAsync(string maVuViec) => throw new NotImplementedException();
+    public Task<string> CreateAsync(string maVuViec, DateTime ngayRaQuyetDinh, string maTrangThai) => throw new NotImplementedException();
+    public Task UpdateTrangThaiAsync(string maQuyetDinh, string maTrangThai) => throw new NotImplementedException();
+}
+
+class FakeTaiKhoanRepository : AlcoholViolationManagement.DAL.Interfaces.ITaiKhoanRepository
+{
+    public bool IsActive { get; set; } = true;
+    public Task<bool?> GetTrangThaiAsync(string maTaiKhoan) => Task.FromResult<bool?>(IsActive);
+    public Task<PagedResult<TaiKhoan>> SearchAsync(string? keyword, int? vaiTro, bool? trangThai, int page, int pageSize) => throw new NotImplementedException();
+    public Task<TaiKhoan?> GetByIdAsync(string maTaiKhoan) => throw new NotImplementedException();
+    public Task<TaiKhoan?> GetByTenDangNhapAsync(string tenDangNhap) => throw new NotImplementedException();
+    public Task<bool> ExistsUsernameAsync(string tenDangNhap, string? excludeMa = null) => throw new NotImplementedException();
+    public Task<bool> ExistsEmailAsync(string email, string? excludeMa = null) => throw new NotImplementedException();
+    public Task<string> InsertAsync(TaiKhoan taiKhoan) => throw new NotImplementedException();
+    public Task UpdateAsync(TaiKhoan taiKhoan) => throw new NotImplementedException();
+    public Task UpdateMatKhauAsync(string maTaiKhoan, string matKhauHash) => throw new NotImplementedException();
+    public Task UpdateLanDangNhapCuoiAsync(string maTaiKhoan, DateTime thoiDiem) => throw new NotImplementedException();
 }

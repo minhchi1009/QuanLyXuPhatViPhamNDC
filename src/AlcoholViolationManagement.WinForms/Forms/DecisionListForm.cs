@@ -33,15 +33,19 @@ public partial class DecisionListForm : Form
         var viewItem = new ToolStripMenuItem("Xem và in quyết định");
         _statusItem = new ToolStripMenuItem("Cập nhật trạng thái");
         _paymentItem = new ToolStripMenuItem("Ghi nhận thanh toán");
+        var scanItem = new ToolStripMenuItem("Quét quyết định quá hạn");
         _contextMenu.Items.Add(viewItem);
         _contextMenu.Items.Add(_statusItem);
         _contextMenu.Items.Add(new ToolStripSeparator());
         _contextMenu.Items.Add(_paymentItem);
+        _contextMenu.Items.Add(new ToolStripSeparator());
+        _contextMenu.Items.Add(scanItem);
         gridQuyetDinh.ContextMenuStrip = _contextMenu;
 
         viewItem.Click += async (_, _) => await OpenDetailAsync();
         _statusItem.Click += async (_, _) => await OpenStatusAsync();
         _paymentItem.Click += async (_, _) => await OpenPaymentAsync();
+        scanItem.Click += async (_, _) => await ManualScanOverdueAsync();
         _contextMenu.Opening += (_, _) =>
         {
             var item = SelectedRow();
@@ -52,6 +56,8 @@ public partial class DecisionListForm : Form
 
             _paymentItem.Visible = AppSession.CanManageThanhToan;
             _paymentItem.Enabled = editable;
+
+            scanItem.Visible = AppSession.CanManageQuyetDinh;
         };
 
         gridQuyetDinh.CellDoubleClick += async (_, e) =>
@@ -83,6 +89,7 @@ public partial class DecisionListForm : Form
             await SearchAsync();
         };
         btnLapQuyetDinh.Click += async (_, _) => await CreateAsync();
+        btnQuetQuaHan.Click += async (_, _) => await ManualScanOverdueAsync();
         pagination.PageChanged += async (_, e) => await LoadAsync(e.Page);
 
         Shown += async (_, _) =>
@@ -90,6 +97,8 @@ public partial class DecisionListForm : Form
             if (_started) return;
             _started = true;
             btnLapQuyetDinh.Visible = AppSession.CanManageQuyetDinh;
+            btnQuetQuaHan.Visible = AppSession.CanManageQuyetDinh;
+            await AutoScanOverdueAsync();
             await LoadStatusesAsync();
             await LoadAsync(1);
         };
@@ -198,6 +207,54 @@ public partial class DecisionListForm : Form
         using var dialog = new PaymentCreateForm(item.MaQuyetDinh);
         if (dialog.ShowDialog(UiHelper.ModalOwner(this)) == DialogResult.OK)
             await LoadAsync(_page);
+    }
+
+    private async Task AutoScanOverdueAsync()
+    {
+        try
+        {
+            var updated = await AppSession.Services.QuyetDinh.QuetVaCapNhatQuaHanAsync();
+            if (updated > 0)
+            {
+                UiHelper.ShowInfo(this, $"Hệ thống đã tự động quét và cập nhật {updated} quyết định quá hạn 10 ngày sang trạng thái 'Quá hạn'.");
+            }
+        }
+        catch
+        {
+            // Tự động quét ngầm khi mở màn hình, không làm gián đoạn hiển thị dữ liệu nếu gặp lỗi mạng tạm thời
+        }
+    }
+
+    private async Task ManualScanOverdueAsync()
+    {
+        btnQuetQuaHan.Enabled = false;
+        try
+        {
+            var updated = 0;
+            var success = await UiHelper.RunAsync(
+                this,
+                async () =>
+                {
+                    updated = await AppSession.Services.QuyetDinh.QuetVaCapNhatQuaHanAsync();
+                },
+                _overlay);
+
+            if (!success) return;
+
+            if (updated > 0)
+            {
+                UiHelper.ShowInfo(this, $"Đã quét và cập nhật thành công {updated} quyết định sang trạng thái 'Quá hạn' (TT03).");
+                await LoadAsync(_page);
+            }
+            else
+            {
+                UiHelper.ShowInfo(this, "Không có quyết định nào quá hạn (tất cả quyết định chưa nộp phạt đều còn trong thời hạn 10 ngày).");
+            }
+        }
+        finally
+        {
+            btnQuetQuaHan.Enabled = true;
+        }
     }
 
     private void Grid_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)

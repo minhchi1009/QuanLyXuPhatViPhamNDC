@@ -110,4 +110,13 @@ public sealed class QuyetDinhService : ServiceBase
 
         return await GetAsync(maQuyetDinh);
     }
+
+    public async Task<int> QuetVaCapNhatQuaHanAsync(int soNgayChoPhep = 10)
+    {
+        _userContext.RequireUser();
+
+        return await DbAsync(
+            () => _quyetDinhRepository.QuetVaCapNhatQuaHanAsync(soNgayChoPhep),
+            "Không thể quét cập nhật trạng thái quá hạn.");
+    }
 }

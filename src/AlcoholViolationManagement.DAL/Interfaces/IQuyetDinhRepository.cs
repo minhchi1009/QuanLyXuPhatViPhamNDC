@@ -16,4 +16,5 @@ public interface IQuyetDinhRepository
     Task<string?> GetMaQuyetDinhByVuViecAsync(string maVuViec);
     Task<string> CreateAsync(string maVuViec, DateTime ngayRaQuyetDinh, string maTrangThai);
     Task UpdateTrangThaiAsync(string maQuyetDinh, string maTrangThai);
+    Task<int> QuetVaCapNhatQuaHanAsync(int soNgayChoPhep = 10);
 }

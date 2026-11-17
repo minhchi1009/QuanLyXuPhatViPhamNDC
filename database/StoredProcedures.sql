@@ -186,5 +186,46 @@ BEGIN
 END
 GO
 
+CREATE OR ALTER PROCEDURE dbo.sp_QuetVaCapNhatQuaHan
+    @SoNgayChoPhep INT = 10,
+    @SoLuongCapNhat INT = 0 OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    DECLARE @TrangThaiChuaNop CHAR(10) = 'TT01';
+    DECLARE @TrangThaiQuaHan  CHAR(10) = 'TT03';
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        DECLARE @UpdatedDecisions TABLE (Ma_QuyetDinh CHAR(10), Ma_VuViec CHAR(10));
+
+        UPDATE q
+           SET q.Ma_TrangThaiThanhToan = @TrangThaiQuaHan
+        OUTPUT INSERTED.Ma_QuyetDinh, INSERTED.Ma_VuViec INTO @UpdatedDecisions
+          FROM dbo.QUYET_DINH_XU_PHAT q
+         WHERE q.Ma_TrangThaiThanhToan = @TrangThaiChuaNop
+           AND CAST(SYSDATETIME() AS DATE) > DATEADD(DAY, @SoNgayChoPhep, q.NgayRaQuyetDinh)
+           AND NOT EXISTS (SELECT 1 FROM dbo.THANH_TOAN p WHERE p.Ma_QuyetDinh = q.Ma_QuyetDinh);
+
+        UPDATE v
+           SET v.Ma_TrangThaiThanhToan = @TrangThaiQuaHan
+          FROM dbo.VI_PHAM v
+          JOIN @UpdatedDecisions u ON u.Ma_VuViec = v.Ma_VuViec;
+
+        SELECT @SoLuongCapNhat = COUNT(*) FROM @UpdatedDecisions;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END
+GO
+
 PRINT N'Đã tạo stored procedures nghiệp vụ.';
 GO

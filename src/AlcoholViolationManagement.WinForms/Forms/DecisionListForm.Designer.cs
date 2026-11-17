@@ -36,6 +36,7 @@ partial class DecisionListForm
         panelListHeader = new Panel();
         lblListTitle = new Label();
         lblListHint = new Label();
+        btnQuetQuaHan = new RoundedButton();
         btnLapQuyetDinh = new RoundedButton();
         gridHost = new Panel();
         gridQuyetDinh = new BufferedDataGridView();
@@ -249,6 +250,7 @@ partial class DecisionListForm
         // 
         panelListHeader.Controls.Add(lblListTitle);
         panelListHeader.Controls.Add(lblListHint);
+        panelListHeader.Controls.Add(btnQuetQuaHan);
         panelListHeader.Controls.Add(btnLapQuyetDinh);
         panelListHeader.Dock = DockStyle.Fill;
         panelListHeader.Location = new Point(0, 0);
@@ -272,12 +274,26 @@ partial class DecisionListForm
         lblListHint.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         lblListHint.Font = new Font("Segoe UI", 8F);
         lblListHint.ForeColor = ColorTranslator.FromHtml("#8A96A3");
-        lblListHint.Location = new Point(620, 20);
+        lblListHint.Location = new Point(480, 20);
         lblListHint.Name = "lblListHint";
         lblListHint.Size = new Size(280, 18);
         lblListHint.TabIndex = 1;
         lblListHint.Text = "Nhấp đúp để xem quyết định";
         lblListHint.TextAlign = ContentAlignment.TopRight;
+        // 
+        // btnQuetQuaHan
+        // 
+        btnQuetQuaHan.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        btnQuetQuaHan.BackColor = Color.Transparent;
+        btnQuetQuaHan.Font = new Font("Segoe UI", 8.75F, FontStyle.Bold);
+        btnQuetQuaHan.Glyph = "\uE777";
+        btnQuetQuaHan.GlyphSize = 9F;
+        btnQuetQuaHan.Location = new Point(775, 10);
+        btnQuetQuaHan.Name = "btnQuetQuaHan";
+        btnQuetQuaHan.Size = new Size(150, 36);
+        btnQuetQuaHan.TabIndex = 2;
+        btnQuetQuaHan.Text = "Quét quá hạn";
+        btnQuetQuaHan.Variant = ButtonVariant.Secondary;
         // 
         // btnLapQuyetDinh
         // 
@@ -289,7 +305,7 @@ partial class DecisionListForm
         btnLapQuyetDinh.Location = new Point(938, 10);
         btnLapQuyetDinh.Name = "btnLapQuyetDinh";
         btnLapQuyetDinh.Size = new Size(172, 36);
-        btnLapQuyetDinh.TabIndex = 2;
+        btnLapQuyetDinh.TabIndex = 3;
         btnLapQuyetDinh.Text = "Lập quyết định";
         btnLapQuyetDinh.Variant = ButtonVariant.Primary;
         // 
@@ -442,6 +458,7 @@ partial class DecisionListForm
     private Panel panelListHeader = null!;
     private Label lblListTitle = null!;
     private Label lblListHint = null!;
+    private RoundedButton btnQuetQuaHan = null!;
     private RoundedButton btnLapQuyetDinh = null!;
     private Panel gridHost = null!;
     private BufferedDataGridView gridQuyetDinh = null!;
